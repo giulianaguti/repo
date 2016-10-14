@@ -34,26 +34,27 @@ public class MostrarDocumentoServlet extends HttpServlet {
 
         if (tipo.equals("pdf")) {
 
-            Document document = new Document();
-            try {
-                PdfWriter.getInstance(document, new FileOutputStream("doc.pdf"));
-                Chunk chunk = new Chunk(titulo);
-                Chapter chapter = new Chapter(new Paragraph(chunk), 1);
-                chapter.setNumberDepth(0);
-                chapter.add(new Paragraph(contenido));
-                document.open();
-                document.add(chapter);
-                document.close();
-            } catch (DocumentException ex) {
-                Logger.getLogger(MostrarDocumentoServlet.class.getName()).log(Level.SEVERE, null, ex);
-            }
-
             resp.setContentType("application/pdf");
-            ByteArrayOutputStream baos = getByteArrayOutputStream("doc.pdf");
-
+            ModoVisualizadorAdapter adapter= new PDFAdapter();
+            
+            ByteArrayOutputStream baos= adapter.renderizar(titulo, contenido);
             baos.writeTo(resp.getOutputStream());
+            
             resp.getOutputStream().flush();
         } else if (tipo.equals("html")) {
+            String htmlData="";
+            htmlData+="<html>";
+            htmlData+="<head>";
+            htmlData+="<link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css\"/>";
+            htmlData+="</head>";
+            htmlData+="<body class='container'>";
+            htmlData+="<h1>" + titulo + "</h1>";
+            htmlData+="<div class=\"panel panel-default\">";
+            htmlData+="<div class=\"panel-body\">" + contenido + "</div>";
+            htmlData+="</div?";
+            htmlData+="</body>";
+            htmlData+="</html>";
+            /*
             PrintWriter out = resp.getWriter();
             out.print("<html>");
             out.print("<head>");
@@ -65,31 +66,15 @@ public class MostrarDocumentoServlet extends HttpServlet {
             out.print("<div class=\"panel-body\">" + contenido + "</div>");
             out.print("</div?");
             out.print("</body>");
-            out.print("</html>");
+            out.print("</html>");*/
+            ByteArrayOutputStream baos= new ByteArrayOutputStream();
+            baos.write(htmlData.getBytes());
+            baos.writeTo(resp.getOutputStream());
+            resp.getOutputStream().flush();
         }
 
     }
 
-    private ByteArrayOutputStream getByteArrayOutputStream(String ruta) throws IOException {
-
-        File file = new File(ruta);
-
-        FileInputStream fis = new FileInputStream(file);
-
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        byte[] buf = new byte[256];
-        try {
-            for (int readNum; (readNum = fis.read(buf)) != -1;) {
-                bos.write(buf, 0, readNum); //no doubt here is 0
-                //Writes len bytes from the specified byte array starting at offset off to this byte array output stream.
-                System.out.println("read " + readNum + " bytes,");
-            }
-
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-
-        return bos;
-    }
+   
 
 }
