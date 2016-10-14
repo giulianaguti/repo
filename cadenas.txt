@@ -1,0 +1,12 @@
+FINAL 160
+tema:Soporte informático
+
+z1: participacion del mercado PR2 100% en las zonas
+pr1 no alcanza al 100% en ninguna de las zonas
+
+la capacidad de distribucion :
+Z1,Z2: 14000
+Z3:13000
+
+si el costo de que hacer pedido no es 0 usar la politica continua
+= 0 periodica escalonada
