@@ -32,43 +32,8 @@ public class MostrarDocumentoServlet extends HttpServlet {
         String contenido = req.getParameter("contenido");
         String tipo = req.getParameter("tipo");
 
-        if (tipo.equals("pdf")) {
-
-            resp.setContentType("application/pdf");
-            ModoVisualizadorAdapter adapter= new PDFAdapter();
-            
-            ByteArrayOutputStream baos= adapter.renderizar(titulo, contenido);
-            baos.writeTo(resp.getOutputStream());
-            
-            resp.getOutputStream().flush();
-        } else if (tipo.equals("html")) {
-            String htmlData="";
-            htmlData+="<html>";
-            htmlData+="<head>";
-            htmlData+="<link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css\"/>";
-            htmlData+="</head>";
-            htmlData+="<body class='container'>";
-            htmlData+="<h1>" + titulo + "</h1>";
-            htmlData+="<div class=\"panel panel-default\">";
-            htmlData+="<div class=\"panel-body\">" + contenido + "</div>";
-            htmlData+="</div?";
-            htmlData+="</body>";
-            htmlData+="</html>";
-            /*
-            PrintWriter out = resp.getWriter();
-            out.print("<html>");
-            out.print("<head>");
-            out.print("<link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css\"/>");
-            out.print("</head>");
-            out.print("<body class='container'>");
-            out.print("<h1>" + titulo + "</h1>");
-            out.print("<div class=\"panel panel-default\">");
-            out.print("<div class=\"panel-body\">" + contenido + "</div>");
-            out.print("</div?");
-            out.print("</body>");
-            out.print("</html>");*/
-            ByteArrayOutputStream baos= new ByteArrayOutputStream();
-            baos.write(htmlData.getBytes());
+       GestionRenderizado gestor= GestionRenderizado.getInstance();
+            ByteArrayOutputStream baos=  gestor.renderizar(titulo, contenido, tipo);
             baos.writeTo(resp.getOutputStream());
             resp.getOutputStream().flush();
         }
