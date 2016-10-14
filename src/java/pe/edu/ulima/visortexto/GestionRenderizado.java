@@ -16,9 +16,10 @@ public class GestionRenderizado {
     
     public ByteArrayOutputStream renderizar(String titulo, String contenido,String tipo) throws IOException{
        // ModoVisualizacionFactory factory=new ModoVisualizacionFactory();
-        ModoVisualizacionFactory factory=ModoVisualizacionFactory().getInstance();
+        ModoVisualizacionFactory factory= new ModoVisualizacionFactory().getInstance();
         ModoVisualizadorAdapter adapter=factory.obtenerAdapter(tipo);
         
         ByteArrayOutputStream baos=adapter.renderizar(titulo, contenido);
+        return  baos;
     }
 }
